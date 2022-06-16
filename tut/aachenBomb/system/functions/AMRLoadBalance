@@ -1,0 +1,49 @@
+loadBalance1
+{
+	type coded;
+	functionObjectLibs ( "libutilityFunctionObjects.so" );
+	enabled true;
+	name loadBalance;
+	executeControl  timeStep;
+	writeControl    writeTime;
+	codeInclude
+	#{
+		//#include "anyThingYouNeed.H"
+	#};
+
+	codeExecute
+	#{
+		//- Write something to run every time step
+		label nProc = Pstream::nProcs();
+		label nCells =  mesh().nCells();
+		label gnCells = nCells;
+		reduce(gnCells, sumOp<label>());
+		scalar cellratio = nCells/(gnCells*(1./nProc));
+		reduce(cellratio, maxOp<scalar>());
+		Info<< "The Max No. of the mesh in one processores is "
+			<< cellratio*(gnCells*(1./nProc)) << "\nthe ratio is "<< cellratio
+			<< " at the Time = " << mesh().time().timeName()
+			<< endl;
+	#};
+
+	codeWrite
+	#{
+		Pout<< "\nReading the loadBalance code" << nl;
+
+		label nProc = Pstream::nProcs();
+		label nCells =  mesh().nCells();
+		label gnCells = nCells;
+		reduce(gnCells, sumOp<label>());
+		scalar maxCellratio = 3.0;
+		scalar cellratio = nCells/(gnCells*(1./nProc));
+		reduce(cellratio, maxOp<scalar>());
+		Info<< "The Max No. of the mesh in one processores is "
+			<< cellratio*(gnCells*(1./nProc)) << "\nthe ratio is "<< cellratio
+			<< " at the Time = " << mesh().time().timeName()
+			<< endl;
+		if(cellratio > maxCellratio)
+		{
+			Info <<  FatalErrorIn( "Start redistribution") << abort(FatalError);
+		}
+	#};
+}
