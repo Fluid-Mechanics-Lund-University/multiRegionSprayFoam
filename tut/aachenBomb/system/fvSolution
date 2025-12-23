@@ -48,7 +48,7 @@ solvers
         smoother        GaussSeidel;
     }
 
-    pFinal
+    "pFinal|pcorrFinal"
     {
         $p;
         tolerance       1e-06;
