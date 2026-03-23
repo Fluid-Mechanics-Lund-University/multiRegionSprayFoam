@@ -56,10 +56,10 @@ runTimeModifiable yes;
 functions
 {
     #includeFunc Qdot
+
+	#include "$FOAM_CASE/system/functions/UserDefineAMR"
+	#include "$FOAM_CASE/system/functions/AMRLoadBalance"
 }
 
-#include "$FOAM_CASE/system/functions/UserDefineAMR"
-
-#include "$FOAM_CASE/system/functions/AMRLoadBalance"
 
 // ************************************************************************* //
