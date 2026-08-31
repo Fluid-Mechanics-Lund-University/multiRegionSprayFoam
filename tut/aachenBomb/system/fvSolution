@@ -43,8 +43,8 @@ solvers
     p
     {
         solver          GAMG;
-        tolerance       0;
-        relTol          0.1;
+        tolerance       1e-06;     // 绝对残差从0（不设置）改为1e-06
+        relTol          0.01;      // 相对残差从10%改为1%
         smoother        GaussSeidel;
     }
 
